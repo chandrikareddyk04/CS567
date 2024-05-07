@@ -3,88 +3,70 @@
 
 #include <iostream>
 #include <string>
-#include <unordered_map>
 #include <vector>
-#include <algorithm>
-#include <chrono>
-#include <thread>
-#include <map>
+#include <unordered_map>
 
-using namespace std;
-
-struct Task {
-    string name;
-    string description;
-    int priority;
-    string deadline;
+class Task {
+public:
+    std::string name;
+    std::string description;
+    unsigned int priority;
+    std::string deadline;
     bool completed;
-    Task(string n, string desc, int pri, string ddl) : name(n), description(desc), priority(pri), deadline(ddl), completed(false) {}
+
+    Task() : name(""), description(""), priority(0), deadline(""), completed(false) {}
+    Task(const std::string& name, const std::string& description, unsigned int priority, const std::string& deadline)
+        : name(name), description(description), priority(priority), deadline(deadline), completed(false) {}
 };
 
 class TaskManager {
 private:
-    unordered_map<int, vector<Task>> tasksByPriority;
-    vector<Task> tasks;
+    std::vector<Task> tasks;
+    std::unordered_map<unsigned int, std::vector<Task>> tasksByPriority;
 
 public:
     void addTask(const Task& task);
-
-    void displayTasksByPriority(int priority);
-
+    void displayTasksByPriority(unsigned int priority);
     void displayAllTasks();
-
-    void markTaskCompleted(int index);
-
-    void editTask(int index, const Task& newTask);
-
+    void markTaskCompleted(size_t index);
+    void editTask(size_t index, const Task& newTask);
     void sortTasksByPriority();
-
     void sortTasksByDeadline();
-
-    void searchTasksByName(const string& name);
-
+    void searchTasksByName(const std::string& name);
     int getNumTasks() const;
-
-    Task getTask(int index) const;
+    Task getTask(size_t index) const;
 };
 
 class TaskReminder {
 public:
-    enum ReminderType {
-        NOTIFICATION,
-        EMAIL,
-        SMS
-    };
+    static const int NOTIFICATION = 1;
+    static const int EMAIL = 2;
+    static const int SMS = 3;
 
-    enum ReminderFrequency {
-        ONCE,
-        DAILY,
-        WEEKLY
-    };
+    static const int ONCE = 1;
+    static const int DAILY = 2;
+    static const int WEEKLY = 3;
 
-    void setReminder(const Task& task, int reminderType = NOTIFICATION, int reminderFrequency = ONCE);
+    void setReminder(const Task& task, int reminderType, int reminderFrequency);
 
     void scheduleNotification(const Task& task, int reminderFrequency);
-
     void sendEmailReminder(const Task& task);
-
     void sendSMSReminder(const Task& task);
 };
 
 class UserAuthentication {
 private:
-    map<string, string> userCredentials;
+    std::unordered_map<std::string, std::string> userCredentials;
 
 public:
     UserAuthentication();
-
-    bool authenticateUser(const string& username, const string& password);
-
-    void createUser(const string& username, const string& password);
+    bool authenticateUser(const std::string& username, const std::string& password);
+    void createUser(const std::string& username, const std::string& password);
 };
 
-int getInputInteger(const string& prompt);
+int getInputInteger(const std::string& prompt);
+std::string getInputString(const std::string& prompt);
+void manageTaskManager();
+void manageTasks(TaskManager& taskManager, TaskReminder& taskReminder);
 
-string getInputString(const string& prompt);
-
-#endif
+#endif /* TASK_MANAGER_HPP */
